@@ -44,6 +44,7 @@ public class Worker
 				workStrategy.work(message);
 			}
 		};
-		channel.basicConsume(queueName, consumer);
+		
+		channel.basicConsume(queueName, true, consumer);
 	}
 }

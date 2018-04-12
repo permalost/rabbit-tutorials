@@ -13,24 +13,21 @@ public class Maker {
 	private final TimingStrategy timingStrategy;
 	private final MessageStrategy messageStrategy;
 	private final int count;
-	private final Connection connection;
+	private final Channel channel;
 	private final String queueName;
 
-	public Maker(Connection connection, String queueName, int count, TimingStrategy timingStrategy, MessageStrategy messageStrategy)
+	public Maker(Channel channel, String queueName, int count, TimingStrategy timingStrategy, MessageStrategy messageStrategy)
 	{
 		this.timingStrategy = timingStrategy;
 		this.messageStrategy = messageStrategy;
 		this.count = count;
-		this.connection = connection;
+		this.channel = channel;
 		this.queueName = queueName;
 	}
 	
 	public void start() {
 		try
-		{
-			Channel channel = connection.createChannel();
-
-			channel.queueDeclare(queueName, false, false, false, null);
+		{			
 			for (int i = 0; i < count; i++)
 			{
 				String message = messageStrategy.message();

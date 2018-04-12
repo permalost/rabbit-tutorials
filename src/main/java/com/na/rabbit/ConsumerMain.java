@@ -17,13 +17,12 @@ public class ConsumerMain {
 	{
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("rabbit_1");
-		final Connection connection = factory.newConnection();
+		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
-		channel.queueDeclare(QUEUE_NAME_DEFAULT, DURABILITY_DEFAULT, EXCLUSIVITY_DEFAULT, AUTO_DELETE_DEFAULT, null);
 		
-		WorkFactory workFactory = new WorkFactory();
+		channel.queueDeclare(QUEUE_NAME_DEFAULT, DURABILITY_DEFAULT, EXCLUSIVITY_DEFAULT, AUTO_DELETE_DEFAULT, null);
 
-		Worker worker = new Worker(channel, QUEUE_NAME_DEFAULT, workFactory.getWorkStrategy(WORK_TYPE_DEFAULT));
+		Worker worker = new Worker(channel, QUEUE_NAME_DEFAULT, WorkFactory.getWorkStrategy(WORK_TYPE_DEFAULT));
 		worker.start();
 	}
   

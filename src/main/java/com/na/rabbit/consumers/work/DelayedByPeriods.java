@@ -15,7 +15,7 @@ class DelayedByPeriods implements WorkStrategy {
 		{
 			long count = task.chars().filter(character -> character == '.').count();
 			TimeUnit.SECONDS.sleep(count);
-			System.out.println(String.format("Completed %s by %s", task, this.toString()));
+			System.out.println(String.format(" [x] Received '%s'", task));
 		}
 		catch (InterruptedException ex)
 		{

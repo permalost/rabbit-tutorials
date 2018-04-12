@@ -5,7 +5,7 @@ import com.na.rabbit.consumers.WorkStrategy;
 
 public class WorkFactory {
 	
-	public WorkStrategy getWorkStrategy(String workType) {
+	public static WorkStrategy getWorkStrategy(String workType) {
 		switch (workType)
 		{
 			case "periods":

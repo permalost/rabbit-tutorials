@@ -8,6 +8,8 @@ public class TimingFactory {
 	public static TimingStrategy getTiming(String timing) {
 		switch (timing)
 		{
+			case "secondDelay":
+				return new SecondDelay();
 			case "immediate":
 			default:
 				return new Immediate();
