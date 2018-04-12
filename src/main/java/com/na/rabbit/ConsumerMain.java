@@ -24,16 +24,12 @@ public class ConsumerMain {
 		Worker worker = new Worker(channel, queueName, WorkFactory.getWorkStrategy(work));
 		worker.start();
 	}
-
-	private static final String DURABILITY_DEFAULT = "false";
-	private static final String EXCLUSIVITY_DEFAULT = "false";
-	private static final String AUTO_DELETE_DEFAULT = "false";
 	
 	private static Channel prepareChannel(final Connection connection, final String queueName) throws IOException
 	{
-		boolean durable = Boolean.parseBoolean(Optional.ofNullable(System.getenv("DURABLE")).orElse(DURABILITY_DEFAULT));
-		boolean exclusive = Boolean.parseBoolean(Optional.ofNullable(System.getenv("EXCLUSIVE")).orElse(EXCLUSIVITY_DEFAULT));
-		boolean autoDelete = Boolean.parseBoolean(Optional.ofNullable(System.getenv("AUTO_DELETE")).orElse(AUTO_DELETE_DEFAULT));
+		boolean durable = Boolean.parseBoolean(Optional.ofNullable(System.getenv("DURABLE")).orElse("false"));
+		boolean exclusive = Boolean.parseBoolean(Optional.ofNullable(System.getenv("EXCLUSIVE")).orElse("false"));
+		boolean autoDelete = Boolean.parseBoolean(Optional.ofNullable(System.getenv("AUTO_DELETE")).orElse("false"));
 		
 		Channel channel = connection.createChannel();
 		channel.queueDeclare(queueName, durable, exclusive, autoDelete, null);

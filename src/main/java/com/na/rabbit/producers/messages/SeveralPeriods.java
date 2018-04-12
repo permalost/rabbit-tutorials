@@ -12,7 +12,7 @@ class SeveralPeriods implements MessageStrategy {
 	@Override
 	public String message()
 	{
-		int length = RANDOM.nextInt(10);
+		int length = 1 + RANDOM.nextInt(4);
 		char[] chars = new char[length];
 		Arrays.fill(chars, '.');
 		return String.format("Hello%s", new String(chars));

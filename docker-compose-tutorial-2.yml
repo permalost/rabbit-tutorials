@@ -1,0 +1,66 @@
+version: '2.1'
+
+services:
+  rabbit:
+    image: rabbitmq:management-alpine
+    ports:
+      - '4369:4369'
+      - '5671:5671'
+      - '5672:5672'
+      - '15671:15671'
+      - '15672:15672'
+      - '25672:25672'
+    healthcheck:
+      test: ["CMD", "wget", "http://localhost:15672"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+  work-producer:
+    build:
+      context: .
+      dockerfile: producer.Dockerfile
+    image: permalost/rabbit-tutorials-producer
+    environment:
+      - RABBIT_HOST=rabbit
+      - QUEUE_NAME=tutorial2
+      - TIMING=secondDelay
+      - MESSAGE=periods
+    depends_on:
+      rabbit:
+        condition: service_healthy
+  work-consumer1:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    environment:
+      - RABBIT_HOST=rabbit
+      - QUEUE_NAME=tutorial2
+      - WORK=periods
+    depends_on:
+      rabbit:
+        condition: service_healthy
+  work-consumer2:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    environment:
+      - RABBIT_HOST=rabbit
+      - QUEUE_NAME=tutorial2
+      - WORK=periods
+    depends_on:
+      rabbit:
+        condition: service_healthy
+  work-consumer3:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    environment:
+      - RABBIT_HOST=rabbit
+      - QUEUE_NAME=tutorial2
+      - WORK=periods
+    depends_on:
+      rabbit:
+        condition: service_healthy
