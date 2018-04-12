@@ -12,16 +12,18 @@ services:
       - '25672:25672'
     healthcheck:
       test: ["CMD", "wget", "http://localhost:15672"]
-      interval: 30s
-      timeout: 10s
+      interval: 10s
+      timeout: 5s
       retries: 15
   hello-producer:
     build:
       context: .
       dockerfile: producer.Dockerfile
     image: permalost/rabbit-tutorials-producer
-    links:
-      - rabbit
+    environment:
+      - RABBIT_HOST=rabbit
+      - QUEUE_NAME=tutorial1
+      - TIMING=secondDelay
     depends_on:
       rabbit:
         condition: service_healthy
@@ -30,8 +32,34 @@ services:
       context: .
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
-    links:
-      - rabbit
+    environment:
+      - RABBIT_HOST=rabbit
+      - QUEUE_NAME=tutorial1
+    depends_on:
+      rabbit:
+        condition: service_healthy
+  work-producer:
+    build:
+      context: .
+      dockerfile: producer.Dockerfile
+    image: permalost/rabbit-tutorials-producer
+    environment:
+      - RABBIT_HOST=rabbit
+      - QUEUE_NAME=tutorial2
+      - TIMING=secondDelay
+      - MESSAGE=periods
+    depends_on:
+      rabbit:
+        condition: service_healthy
+  work-consumer:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    environment:
+      - RABBIT_HOST=rabbit
+      - QUEUE_NAME=tutorial2
+      - WORK=periods
     depends_on:
       rabbit:
         condition: service_healthy

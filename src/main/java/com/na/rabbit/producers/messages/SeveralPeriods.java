@@ -15,7 +15,7 @@ class SeveralPeriods implements MessageStrategy {
 		int length = RANDOM.nextInt(10);
 		char[] chars = new char[length];
 		Arrays.fill(chars, '.');
-		return String.format("Hello World%s", new String(chars));
+		return String.format("Hello%s", new String(chars));
 	}
 
 }

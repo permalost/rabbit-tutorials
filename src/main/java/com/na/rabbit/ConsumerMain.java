@@ -3,27 +3,49 @@ package com.na.rabbit;
 import com.na.rabbit.consumers.work.WorkFactory;
 import com.na.rabbit.consumers.Worker;
 import com.rabbitmq.client.*;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 public class ConsumerMain {
   
-  private static final String QUEUE_NAME_DEFAULT = "hello";
-  private static final boolean DURABILITY_DEFAULT = false;
-  private static final boolean EXCLUSIVITY_DEFAULT = false;
-  private static final boolean AUTO_DELETE_DEFAULT = false;
+  private static final String QUEUE_NAME_DEFAULT = "default";
   
   private static final String WORK_TYPE_DEFAULT = "immediate";
 
 	public static void main(String[] argv) throws Exception 
 	{
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("rabbit_1");
-		Connection connection = factory.newConnection();
-		Channel channel = connection.createChannel();
+		String queueName = Optional.ofNullable(System.getenv("QUEUE_NAME")).orElse(QUEUE_NAME_DEFAULT);
+		String work = Optional.ofNullable(System.getenv("WORK")).orElse(WORK_TYPE_DEFAULT);
+				
+		Connection connection = prepareConnection();
+		Channel channel = prepareChannel(connection, queueName);
 		
-		channel.queueDeclare(QUEUE_NAME_DEFAULT, DURABILITY_DEFAULT, EXCLUSIVITY_DEFAULT, AUTO_DELETE_DEFAULT, null);
-
-		Worker worker = new Worker(channel, QUEUE_NAME_DEFAULT, WorkFactory.getWorkStrategy(WORK_TYPE_DEFAULT));
+		Worker worker = new Worker(channel, queueName, WorkFactory.getWorkStrategy(work));
 		worker.start();
+	}
+
+	private static final String DURABILITY_DEFAULT = "false";
+	private static final String EXCLUSIVITY_DEFAULT = "false";
+	private static final String AUTO_DELETE_DEFAULT = "false";
+	
+	private static Channel prepareChannel(final Connection connection, final String queueName) throws IOException
+	{
+		boolean durable = Boolean.parseBoolean(Optional.ofNullable(System.getenv("DURABLE")).orElse(DURABILITY_DEFAULT));
+		boolean exclusive = Boolean.parseBoolean(Optional.ofNullable(System.getenv("EXCLUSIVE")).orElse(EXCLUSIVITY_DEFAULT));
+		boolean autoDelete = Boolean.parseBoolean(Optional.ofNullable(System.getenv("AUTO_DELETE")).orElse(AUTO_DELETE_DEFAULT));
+		
+		Channel channel = connection.createChannel();
+		channel.queueDeclare(queueName, durable, exclusive, autoDelete, null);
+		return channel;
+	}
+	
+	private static Connection prepareConnection() throws IOException, TimeoutException 
+	{		
+		ConnectionFactory factory = new ConnectionFactory();
+		String host = Optional.ofNullable(System.getenv("RABBIT_HOST")).orElse("localhost");
+		factory.setHost(host);
+		return factory.newConnection();
 	}
   
 }
