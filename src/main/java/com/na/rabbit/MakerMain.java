@@ -23,7 +23,7 @@ public class MakerMain
 	public static void main(String[] argv) throws Exception
 	{
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
+		factory.setHost("rabbit_1");
 		final Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 		channel.queueDeclare(QUEUE_NAME_DEFAULT, DURABILITY_DEFAULT, EXCLUSIVITY_DEFAULT, AUTO_DELETE_DEFAULT, null);

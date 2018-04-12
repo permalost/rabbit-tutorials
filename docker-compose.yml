@@ -1,0 +1,37 @@
+version: '2.1'
+
+services:
+  rabbit:
+    image: rabbitmq:management-alpine
+    ports:
+      - '4369:4369'
+      - '5671:5671'
+      - '5672:5672'
+      - '15671:15671'
+      - '15672:15672'
+      - '25672:25672'
+    healthcheck:
+      test: ["CMD", "wget", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 15
+  hello-producer:
+    build:
+      context: .
+      dockerfile: producer.Dockerfile
+    image: permalost/rabbit-tutorials-producer
+    links:
+      - rabbit
+    depends_on:
+      rabbit:
+        condition: service_healthy
+  hello-consumer:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    links:
+      - rabbit
+    depends_on:
+      rabbit:
+        condition: service_healthy
