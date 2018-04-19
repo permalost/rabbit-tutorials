@@ -30,7 +30,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>com.na.rabbit.MakerMain</mainClass>
+									<mainClass>com.na.rabbit.PublisherMain</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
