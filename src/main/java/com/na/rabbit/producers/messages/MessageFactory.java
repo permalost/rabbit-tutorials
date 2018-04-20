@@ -10,6 +10,8 @@ public class MessageFactory {
 		{
 			case "periods":
 				return new SeveralPeriods();
+			case "randomPhrase":
+				return new RandomPhrases();
 			case "helloworld":
 			default:
 				return new HelloWorld();

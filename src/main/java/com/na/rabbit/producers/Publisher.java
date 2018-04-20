@@ -33,7 +33,7 @@ public class Publisher {
 				timingStrategy.delay(message);
 				publishingStrategy.publish(message, route);
 				
-				System.out.println(" [x] Sent '" + message + "'");
+				System.out.println(String.format(" [x] Sent '%s':'%s'", route, message));
 			}
 		}
 		catch (IOException ex)

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 class SeveralPeriods implements MessageStrategy {
-	
+
 	private static final Random RANDOM = new Random(1234l);	
 	
 	@Override

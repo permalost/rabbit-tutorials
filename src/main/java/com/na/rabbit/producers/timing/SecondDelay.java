@@ -13,7 +13,7 @@ public class SecondDelay implements TimingStrategy {
 	{
 		try
 		{
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.SECONDS.sleep(2);
 		}
 		catch (InterruptedException ex)
 		{
