@@ -17,70 +17,44 @@ services:
       interval: 10s
       timeout: 5s
       retries: 15
-  topics-producer:
+  direct-producer:
     build:
       context: .
       dockerfile: producer.Dockerfile
     image: permalost/rabbit-tutorials-producer
     environment:
       - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - TIMING=secondDelay
+      - EXCHANGE_NAME=direct_logs
+      - EXCHANGE_TYPE=direct
+      - ROUTING=severity
       - MESSAGE=randomPhrase
-      - ROUTING=facilityseverity
+      - TIMING=secondDelay
     depends_on:
       rabbit:
         condition: service_healthy
-  topics-consumer-hq-and-info:
+  direct-consumer-fatal:
     build:
       context: .
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
       - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - BINDING_KEYS=HQ.INFO
+      - EXCHANGE_NAME=direct_logs
+      - EXCHANGE_TYPE=direct
+      - BINDING_KEYS=FATAL
     depends_on:
       rabbit:
         condition: service_healthy
-  topics-consumer-warnings:
+  direct-consumer-warning:
     build:
       context: .
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
       - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - BINDING_KEYS=*.WARNING
-    depends_on:
-      rabbit:
-        condition: service_healthy
-  topics-consumer-uswest:
-    build:
-      context: .
-      dockerfile: consumer.Dockerfile
-    image: permalost/rabbit-tutorials-consumer
-    environment:
-      - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - BINDING_KEYS=USWEST.*
-    depends_on:
-      rabbit:
-        condition: service_healthy
-  topics-consumer-hq-or-fatal:
-    build:
-      context: .
-      dockerfile: consumer.Dockerfile
-    image: permalost/rabbit-tutorials-consumer
-    environment:
-      - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - BINDING_KEYS=HQ.*,*.FATAL
+      - EXCHANGE_NAME=direct_logs
+      - EXCHANGE_TYPE=direct
+      - BINDING_KEYS=WARNING
     depends_on:
       rabbit:
         condition: service_healthy

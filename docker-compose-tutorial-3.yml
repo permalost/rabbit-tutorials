@@ -17,70 +17,42 @@ services:
       interval: 10s
       timeout: 5s
       retries: 15
-  topics-producer:
+  logs-producer:
     build:
       context: .
       dockerfile: producer.Dockerfile
     image: permalost/rabbit-tutorials-producer
     environment:
       - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - TIMING=secondDelay
+      - EXCHANGE_NAME=logs
+      - EXCHANGE_TYPE=fanout
+      - ROUTING=severity
       - MESSAGE=randomPhrase
-      - ROUTING=facilityseverity
+      - TIMING=secondDelay
     depends_on:
       rabbit:
         condition: service_healthy
-  topics-consumer-hq-and-info:
+  logs-consumer1:
     build:
       context: .
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
       - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - BINDING_KEYS=HQ.INFO
+      - EXCHANGE_NAME=logs
+      - EXCHANGE_TYPE=fanout
     depends_on:
       rabbit:
         condition: service_healthy
-  topics-consumer-warnings:
+  logs-consumer2:
     build:
       context: .
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
       - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - BINDING_KEYS=*.WARNING
-    depends_on:
-      rabbit:
-        condition: service_healthy
-  topics-consumer-uswest:
-    build:
-      context: .
-      dockerfile: consumer.Dockerfile
-    image: permalost/rabbit-tutorials-consumer
-    environment:
-      - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - BINDING_KEYS=USWEST.*
-    depends_on:
-      rabbit:
-        condition: service_healthy
-  topics-consumer-hq-or-fatal:
-    build:
-      context: .
-      dockerfile: consumer.Dockerfile
-    image: permalost/rabbit-tutorials-consumer
-    environment:
-      - RABBIT_HOST=rabbit
-      - EXCHANGE_NAME=topic_logs
-      - EXCHANGE_TYPE=topic
-      - BINDING_KEYS=HQ.*,*.FATAL
+      - EXCHANGE_NAME=logs
+      - EXCHANGE_TYPE=fanout
     depends_on:
       rabbit:
         condition: service_healthy
