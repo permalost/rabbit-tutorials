@@ -1,4 +1,6 @@
 version: '2.1'
+# This scenario is loosely based on the official tutorial 5
+# https://www.rabbitmq.com/tutorials/tutorial-five-java.html
 
 services:
   rabbit:
@@ -23,45 +25,62 @@ services:
     environment:
       - RABBIT_HOST=rabbit
       - EXCHANGE_NAME=tutorial5
+      - EXCHANGE_TYPE=topic
       - TIMING=secondDelay
       - MESSAGE=randomPhrase
       - ROUTING=facilityseverity
     depends_on:
       rabbit:
         condition: service_healthy
-  topics-consumer1:
+  topics-consumer-hq-and-info:
     build:
       context: .
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
       - RABBIT_HOST=rabbit
-      - QUEUE_NAME=tutorial2
-      - WORK=periods
+      - EXCHANGE_NAME=tutorial5
+      - EXCHANGE_TYPE=topic
+      - BINDING_KEYS=HQ.INFO
     depends_on:
       rabbit:
         condition: service_healthy
-  topics-consumer2:
+  topics-consumer-warnings:
     build:
       context: .
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
       - RABBIT_HOST=rabbit
-      - QUEUE_NAME=tutorial2
-      - WORK=periods
+      - EXCHANGE_NAME=tutorial5
+      - EXCHANGE_TYPE=topic
+      - BINDING_KEYS=*.WARNING
     depends_on:
       rabbit:
         condition: service_healthy
-  topics-consumer3:
+  topics-consumer-uswest:
     build:
       context: .
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
       - RABBIT_HOST=rabbit
-      - QUEUE_NAME=tutorial2
-      - WORK=periods
+      - EXCHANGE_NAME=tutorial5
+      - EXCHANGE_TYPE=topic
+      - BINDING_KEYS=USWEST.*
+    depends_on:
+      rabbit:
+        condition: service_healthy
+  topics-consumer-hq-or-fatal:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    environment:
+      - RABBIT_HOST=rabbit
+      - EXCHANGE_NAME=tutorial5
+      - EXCHANGE_TYPE=topic
+      - BINDING_KEYS=HQ.*,*.FATAL
     depends_on:
       rabbit:
         condition: service_healthy

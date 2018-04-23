@@ -8,7 +8,6 @@ class ImmediateComplete implements WorkStrategy
 	@Override
 	public void work(String task)
 	{
-		System.out.println(String.format(" [x] Received '%s'", task));
 	}
 	
 }

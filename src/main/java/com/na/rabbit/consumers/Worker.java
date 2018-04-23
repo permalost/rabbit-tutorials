@@ -42,6 +42,7 @@ public class Worker
 			{
 				String message = new String(body, "UTF-8");
 				workStrategy.work(message);
+				System.out.println(String.format(" [x] Received '%s':'%s'", envelope.getRoutingKey(), message));
 			}
 		};
 		
