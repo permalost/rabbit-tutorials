@@ -1,5 +1,6 @@
 package com.na.rabbit;
 
+import com.na.rabbit.connections.ConnectionFactory;
 import com.na.rabbit.producers.Publisher;
 import com.na.rabbit.producers.PublishingStrategy;
 import com.na.rabbit.producers.RoutingStrategy;
@@ -9,10 +10,8 @@ import com.na.rabbit.producers.routers.RoutingFactory;
 import com.na.rabbit.producers.timing.TimingFactory;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 public class PublisherMain
 {
@@ -33,15 +32,14 @@ public class PublisherMain
 			System.exit(1);
 		}
 		
-		final String timing = Optional.ofNullable(System.getenv("TIMING")).orElse(TIMING_DEFAULT);
-		final String message = Optional.ofNullable(System.getenv("MESSAGE")).orElse(MESSAGE_DEFAULT);
-		final String routing = Optional.ofNullable(System.getenv("ROUTING")).orElse(ROUTING_DEFAULT);
+		final String connectionSource = Optional.ofNullable(System.getenv("CONNECTION_SOURCE")).orElse("default");
 		
-		try (Connection connection = prepareConnection())
+		try (Connection connection = ConnectionFactory.getConnection(connectionSource))
 		{
 			Channel channel;
 			RoutingStrategy routingStrategy;
 			PublishingStrategy publishingStrategy;
+			final String routing = Optional.ofNullable(System.getenv("ROUTING")).orElse(ROUTING_DEFAULT);
 			
 			if (exchangeName != null)
 			{
@@ -53,6 +51,9 @@ public class PublisherMain
 				publishingStrategy = PublisherFactory.getPublishingStrategy("queue", queueName, channel);
 				routingStrategy = RoutingFactory.getRoutingStrategy("none");
 			}
+		
+			final String timing = Optional.ofNullable(System.getenv("TIMING")).orElse(TIMING_DEFAULT);
+			final String message = Optional.ofNullable(System.getenv("MESSAGE")).orElse(MESSAGE_DEFAULT);
 			
 			Publisher maker = new Publisher(
 					TimingFactory.getTiming(timing),
@@ -86,14 +87,6 @@ public class PublisherMain
 		Channel channel = connection.createChannel();
 		channel.exchangeDeclare(exchange, type);
 		return channel;
-	}
-	
-	private static Connection prepareConnection() throws IOException, TimeoutException 
-	{		
-		ConnectionFactory factory = new ConnectionFactory();
-		String host = Optional.ofNullable(System.getenv("RABBIT_HOST")).orElse("localhost");
-		factory.setHost(host);
-		return factory.newConnection();
 	}
 
 }

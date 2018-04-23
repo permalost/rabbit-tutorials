@@ -1,11 +1,12 @@
 package com.na.rabbit;
 
+import com.na.rabbit.connections.ConnectionFactory;
 import com.na.rabbit.consumers.work.WorkFactory;
 import com.na.rabbit.consumers.Worker;
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 public class ConsumerMain {
 
@@ -21,9 +22,12 @@ public class ConsumerMain {
 			System.err.println("Please provide a QUEUE_NAME or EXCHANGE_NAME");
 			System.exit(1);
 		}
-		Connection connection = prepareConnection();
-		Channel channel = connection.createChannel();
 		
+		final String connectionSource = Optional.ofNullable(System.getenv("CONNECTION_SOURCE")).orElse("default");
+		
+		Connection connection = ConnectionFactory.getConnection(connectionSource);
+		Channel channel = connection.createChannel();
+
 		if (exchangeName != null)
 		{
 			queueName = prepareChannelWithExchange(channel, exchangeName);
@@ -32,7 +36,7 @@ public class ConsumerMain {
 		{
 			prepareChannelWithQueue(channel, queueName);
 		}
-		
+
 		String work = Optional.ofNullable(System.getenv("WORK")).orElse(WORK_TYPE_DEFAULT);
 		Worker worker = new Worker(channel, queueName, WorkFactory.getWorkStrategy(work));
 		worker.start();
@@ -62,14 +66,6 @@ public class ConsumerMain {
 		boolean autoDelete = Boolean.parseBoolean(Optional.ofNullable(System.getenv("AUTO_DELETE")).orElse("false"));
 		
 		channel.queueDeclare(queueName, durable, exclusive, autoDelete, null);
-	}
-	
-	private static Connection prepareConnection() throws IOException, TimeoutException 
-	{		
-		ConnectionFactory factory = new ConnectionFactory();
-		String host = Optional.ofNullable(System.getenv("RABBIT_HOST")).orElse("localhost");
-		factory.setHost(host);
-		return factory.newConnection();
 	}
   
 }
