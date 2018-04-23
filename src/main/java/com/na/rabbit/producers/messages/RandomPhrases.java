@@ -2,16 +2,14 @@
 package com.na.rabbit.producers.messages;
 
 import com.na.rabbit.producers.MessageStrategy;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomPhrases implements MessageStrategy {
-	
-	private static final Random RANDOM = new Random(1234l);
 	
 	@Override
 	public String message()
 	{
-		return Phrases.values()[(RANDOM.nextInt(Phrases.values().length))].getPhrase();
+		return Phrases.values()[(ThreadLocalRandom.current().nextInt(Phrases.values().length))].getPhrase();
 	}
 	
 	private static enum Phrases {

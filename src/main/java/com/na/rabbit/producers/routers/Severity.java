@@ -2,16 +2,14 @@
 package com.na.rabbit.producers.routers;
 
 import com.na.rabbit.producers.RoutingStrategy;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Severity implements RoutingStrategy {
-	
-	private static final Random RANDOM = new Random(1234l);
 	
 	@Override
 	public String route()
 	{
-		return Level.values()[(RANDOM.nextInt(Level.values().length))].name();
+		return Level.values()[(ThreadLocalRandom.current().nextInt(Level.values().length))].name();
 	}
 
 	private static enum Level {
