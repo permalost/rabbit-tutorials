@@ -23,7 +23,7 @@ services:
       dockerfile: producer.Dockerfile
     image: permalost/rabbit-tutorials-producer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=logs
       - EXCHANGE_TYPE=fanout
       - ROUTING=severity
@@ -38,7 +38,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=logs
       - EXCHANGE_TYPE=fanout
     depends_on:
@@ -50,7 +50,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=logs
       - EXCHANGE_TYPE=fanout
     depends_on:

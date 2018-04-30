@@ -23,7 +23,7 @@ services:
       dockerfile: producer.Dockerfile
     image: permalost/rabbit-tutorials-producer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=topic_logs
       - EXCHANGE_TYPE=topic
       - TIMING=secondDelay
@@ -38,7 +38,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=topic_logs
       - EXCHANGE_TYPE=topic
       - BINDING_KEYS=HQ.INFO
@@ -51,7 +51,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=topic_logs
       - EXCHANGE_TYPE=topic
       - BINDING_KEYS=*.WARNING
@@ -64,7 +64,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=topic_logs
       - EXCHANGE_TYPE=topic
       - BINDING_KEYS=USWEST.*
@@ -77,7 +77,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=topic_logs
       - EXCHANGE_TYPE=topic
       - BINDING_KEYS=HQ.*,*.FATAL

@@ -55,7 +55,7 @@ public class PublisherMain
 			final String timing = Optional.ofNullable(System.getenv("TIMING")).orElse(TIMING_DEFAULT);
 			final String message = Optional.ofNullable(System.getenv("MESSAGE")).orElse(MESSAGE_DEFAULT);
 			
-			Publisher maker = new Publisher(
+			Publisher publisher = new Publisher(
 					TimingFactory.getTiming(timing),
 					MessageFactory.getMessageStrategy(message),
 					publishingStrategy, 
@@ -63,7 +63,7 @@ public class PublisherMain
 					MESSAGE_COUNT
 			);
 
-			maker.start();
+			publisher.start();
 			
 			channel.close();
 		}

@@ -23,7 +23,7 @@ services:
       dockerfile: producer.Dockerfile
     image: permalost/rabbit-tutorials-producer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=direct_logs
       - EXCHANGE_TYPE=direct
       - ROUTING=severity
@@ -38,7 +38,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=direct_logs
       - EXCHANGE_TYPE=direct
       - BINDING_KEYS=FATAL
@@ -51,7 +51,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - EXCHANGE_NAME=direct_logs
       - EXCHANGE_TYPE=direct
       - BINDING_KEYS=WARNING

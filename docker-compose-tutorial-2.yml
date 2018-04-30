@@ -21,7 +21,7 @@ services:
       dockerfile: producer.Dockerfile
     image: permalost/rabbit-tutorials-producer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - QUEUE_NAME=tutorial2
       - TIMING=secondDelay
       - MESSAGE=periods
@@ -34,7 +34,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - QUEUE_NAME=tutorial2
       - WORK=periods
     depends_on:
@@ -46,7 +46,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - QUEUE_NAME=tutorial2
       - WORK=periods
     depends_on:
@@ -58,7 +58,7 @@ services:
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
     environment:
-      - RABBIT_HOST=rabbit
+      - RABBIT_SERVERS=rabbit
       - QUEUE_NAME=tutorial2
       - WORK=periods
     depends_on:
