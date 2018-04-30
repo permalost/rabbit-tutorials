@@ -44,18 +44,15 @@ public class ConsumerMain {
 	
 	private static String prepareChannelWithExchange(final Channel channel, final String exchange) throws IOException
 	{
-		final String type = Optional.ofNullable(System.getenv("EXCHANGE_TYPE")).orElse("direct");
-		
-		channel.exchangeDeclare(exchange, type);
-		String queueName = channel.queueDeclare().getQueue();
-		
+		final String type = Optional.ofNullable(System.getenv("EXCHANGE_TYPE")).orElse("direct");		
+		final String queueName = channel.queueDeclare().getQueue();		
 		final String bindingKeys = Optional.ofNullable(System.getenv("BINDING_KEYS")).orElse("#");
 		
+		channel.exchangeDeclare(exchange, type);
 		for (String bindingKey : bindingKeys.split(","))
 		{
 			channel.queueBind(queueName, exchange, bindingKey);
-		}
-		
+		}		
 		return queueName;
 	}
 	
