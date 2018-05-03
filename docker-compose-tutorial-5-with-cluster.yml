@@ -1,0 +1,123 @@
+version: '2.3'
+# This scenario is loosely based on the official tutorial 5
+# https://www.rabbitmq.com/tutorials/tutorial-five-java.html
+
+services:
+  topics-producer:
+    build:
+      context: .
+      dockerfile: producer.Dockerfile
+    image: permalost/rabbit-tutorials-producer
+    environment:
+      - RABBIT_SERVERS=rabbit1,rabbit2,rabbit3
+      - EXCHANGE_NAME=topic_logs
+      - EXCHANGE_TYPE=topic
+      - TIMING=secondDelay
+      - MESSAGE=randomPhrase
+      - ROUTING=facilityseverity
+      - MESSAGE_COUNT=2000
+    depends_on:
+      rabbit1:
+        condition: service_healthy
+
+  topics-consumer-hq-and-info:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    environment:
+      - RABBIT_SERVERS=rabbit1,rabbit2,rabbit3
+      - EXCHANGE_NAME=topic_logs
+      - EXCHANGE_TYPE=topic
+      - QUEUE_NAME=hq-and-info
+      - BINDING_KEYS=HQ.INFO
+    depends_on:
+      rabbit1:
+        condition: service_healthy
+
+  topics-consumer-warnings:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    environment:
+      - RABBIT_SERVERS=rabbit1,rabbit2,rabbit3
+      - EXCHANGE_NAME=topic_logs
+      - EXCHANGE_TYPE=topic
+      - QUEUE_NAME=warnings
+      - BINDING_KEYS=*.WARNING
+    depends_on:
+      rabbit1:
+        condition: service_healthy
+
+  topics-consumer-uswest:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    environment:
+      - RABBIT_SERVERS=rabbit1,rabbit2,rabbit3
+      - EXCHANGE_NAME=topic_logs
+      - EXCHANGE_TYPE=topic
+      - QUEUE_NAME=uswest
+      - BINDING_KEYS=USWEST.*
+    depends_on:
+      rabbit1:
+        condition: service_healthy
+
+  topics-consumer-hq-or-fatal:
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    image: permalost/rabbit-tutorials-consumer
+    environment:
+      - RABBIT_SERVERS=rabbit1,rabbit2,rabbit3
+      - EXCHANGE_NAME=topic_logs
+      - EXCHANGE_TYPE=topic
+      - QUEUE_NAME=hq-or-fatal
+      - BINDING_KEYS=HQ.*,*.FATAL
+    depends_on:
+      rabbit1:
+        condition: service_healthy
+
+  rabbit1:
+    image: rabbitmq:management-alpine
+    hostname: rabbit1
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secret string"
+      RABBITMQ_NODENAME: rabbit1
+    volumes:
+      - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
+      - "./rabbitmq-definitions.json:/etc/rabbitmq/definitions.json"
+    ports:
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+
+  rabbit2:
+    image: rabbitmq:management-alpine
+    hostname: rabbit2
+    depends_on:
+      - rabbit1
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secret string"
+      RABBITMQ_NODENAME: rabbit2
+    volumes:
+      - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
+      - "./rabbitmq-definitions.json:/etc/rabbitmq/definitions.json"
+
+  rabbit3:
+    image: rabbitmq:management-alpine
+    hostname: rabbit3
+    depends_on:
+      - rabbit1
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secret string"
+      RABBITMQ_NODENAME: rabbit3
+    volumes:
+      - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
+      - "./rabbitmq-definitions.json:/etc/rabbitmq/definitions.json"

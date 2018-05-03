@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class PublisherMain
 {
-	private static final int MESSAGE_COUNT = 20;
+	private static final String MESSAGE_COUNT = "20";
 	
 	private static final String TIMING_DEFAULT = "immediate";
 	private static final String MESSAGE_DEFAULT = "helloworld";
@@ -54,15 +54,16 @@ public class PublisherMain
 		
 			final String timing = Optional.ofNullable(System.getenv("TIMING")).orElse(TIMING_DEFAULT);
 			final String message = Optional.ofNullable(System.getenv("MESSAGE")).orElse(MESSAGE_DEFAULT);
+			final int messageCount = Integer.parseInt(Optional.ofNullable(System.getenv("MESSAGE_COUNT")).orElse(MESSAGE_COUNT));
 			
 			Publisher publisher = new Publisher(
 					TimingFactory.getTiming(timing),
 					MessageFactory.getMessageStrategy(message),
-					publishingStrategy, 
+					publishingStrategy,
 					routingStrategy, 
-					MESSAGE_COUNT
+					messageCount
 			);
-
+			
 			publisher.start();
 			
 			channel.close();
@@ -71,11 +72,11 @@ public class PublisherMain
 	
 	private static Channel prepareChannelWithQueue(final Connection connection, final String queueName) throws IOException
 	{
-		boolean durable = Boolean.parseBoolean(Optional.ofNullable(System.getenv("DURABLE")).orElse("false"));
-		boolean exclusive = Boolean.parseBoolean(Optional.ofNullable(System.getenv("EXCLUSIVE")).orElse("false"));
-		boolean autoDelete = Boolean.parseBoolean(Optional.ofNullable(System.getenv("AUTO_DELETE")).orElse("false"));
+		final boolean durable = Boolean.parseBoolean(Optional.ofNullable(System.getenv("DURABLE")).orElse("false"));
+		final boolean exclusive = Boolean.parseBoolean(Optional.ofNullable(System.getenv("EXCLUSIVE")).orElse("false"));
+		final boolean autoDelete = Boolean.parseBoolean(Optional.ofNullable(System.getenv("AUTO_DELETE")).orElse("false"));
 		
-		Channel channel = connection.createChannel();
+		final Channel channel = connection.createChannel();
 		channel.queueDeclare(queueName, durable, exclusive, autoDelete, null);
 		return channel;
 	}
@@ -84,7 +85,7 @@ public class PublisherMain
 	{
 		final String type = Optional.ofNullable(System.getenv("EXCHANGE_TYPE")).orElse("direct");
 		
-		Channel channel = connection.createChannel();
+		final Channel channel = connection.createChannel();
 		channel.exchangeDeclare(exchange, type);
 		return channel;
 	}
