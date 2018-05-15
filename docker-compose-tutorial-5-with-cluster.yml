@@ -19,6 +19,10 @@ services:
     depends_on:
       rabbit1:
         condition: service_healthy
+      rabbit2:
+        condition: service_healthy
+      rabbit3:
+        condition: service_healthy
 
   topics-consumer-hq-and-info:
     build:
@@ -33,6 +37,10 @@ services:
       - BINDING_KEYS=HQ.INFO
     depends_on:
       rabbit1:
+        condition: service_healthy
+      rabbit2:
+        condition: service_healthy
+      rabbit3:
         condition: service_healthy
 
   topics-consumer-warnings:
@@ -49,6 +57,10 @@ services:
     depends_on:
       rabbit1:
         condition: service_healthy
+      rabbit2:
+        condition: service_healthy
+      rabbit3:
+        condition: service_healthy
 
   topics-consumer-uswest:
     build:
@@ -64,6 +76,10 @@ services:
     depends_on:
       rabbit1:
         condition: service_healthy
+      rabbit2:
+        condition: service_healthy
+      rabbit3:
+        condition: service_healthy
 
   topics-consumer-hq-or-fatal:
     build:
@@ -78,6 +94,10 @@ services:
       - BINDING_KEYS=HQ.*,*.FATAL
     depends_on:
       rabbit1:
+        condition: service_healthy
+      rabbit2:
+        condition: service_healthy
+      rabbit3:
         condition: service_healthy
 
   rabbit1:
@@ -109,6 +129,12 @@ services:
     volumes:
       - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
       - "./rabbitmq-definitions.json:/etc/rabbitmq/definitions.json"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
 
   rabbit3:
     image: rabbitmq:management-alpine
@@ -121,3 +147,9 @@ services:
     volumes:
       - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
       - "./rabbitmq-definitions.json:/etc/rabbitmq/definitions.json"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s

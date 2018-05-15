@@ -1,4 +1,4 @@
-version: '2.1'
+version: '2.3'
 
 services:
   rabbit:
@@ -11,10 +11,12 @@ services:
       - '15672:15672'
       - '25672:25672'
     healthcheck:
-      test: ["CMD", "wget", "http://localhost:15672"]
+      test: ["CMD", "rabbitmqctl", "status"]
       interval: 10s
       timeout: 5s
       retries: 15
+      start_period: 20s
+
   hello-producer:
     build:
       context: .
