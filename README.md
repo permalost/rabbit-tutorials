@@ -109,6 +109,7 @@ This controls the type of exchange is created. It is ignored if no exchange name
 
 ## Gotchas
 
+- Build failure with `Try again: Unknown host repo.maven.apache.org: Try again` setup docker dns - https://development.robinwinslow.uk/2016/06/23/fix-docker-networking-dns/
 - If `docker-compose -f <filename> up`  stalls make sure you have done a `docker-compose down`
 - If code changes aren't showing add `--build` to the docker-compose or rebuild through Maven
 - The docker file variable are environmental variables, not system properties (for differences in setting see: https://stackoverflow.com/a/7054981)
