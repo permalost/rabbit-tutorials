@@ -1,12 +1,11 @@
-FROM maven:alpine AS rabbit-tutorials-build
+FROM maven:3-jdk-11-slim AS rabbit-tutorials-build
 
-WORKDIR /app
-ADD ./pom.xml /src/pom.xml
 WORKDIR /src
-RUN mvn verify clean --fail-never
+ADD ./pom.xml .
+RUN RUN mvn package dependency:go-offline
 
 COPY . .
-RUN mvn package
+RUN mvn package --offline
 
 FROM openjdk:8-jre-alpine
 
