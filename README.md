@@ -9,12 +9,17 @@ It started with implementing each of the 5 official tutorials (https://www.rabbi
 The minimum to see RabbitMQ in action:
 
 ```shell
-docker-compose -f docker-compose-tutorial-5-with-cluster.yml up
+docker-compose -f docker-compose-tutorial-5.yml up
 ```
 Should eventually look like:
 ![docker-compose output](output.png)
 
 RabbitMQ management available at https://localhost:15672 (login: guest password: guest)
+
+To run the various tutorials prepend the docker compose up with the tutorial number. This will use the corresponding environment file (e.g. .4.env)
+```shell
+TUTORIAL=4 docker-compose up
+```
 
 ## Developing
 

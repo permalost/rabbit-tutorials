@@ -3,65 +3,38 @@ version: '2.3'
 services:
   rabbit:
     image: rabbitmq:management-alpine
+    expose:
+      - '4369'
+      - '5671'
+      - '5672'
+      - '15671'
+      - '25672'
     ports:
-      - '4369:4369'
-      - '5671:5671'
-      - '5672:5672'
-      - '15671:15671'
       - '15672:15672'
-      - '25672:25672'
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 10s
       timeout: 5s
       retries: 15
       start_period: 20s
-      
-  hello-producer:
+
+  producer:
     build:
       context: .
       dockerfile: producer.Dockerfile
     image: permalost/rabbit-tutorials-producer
-    environment:
-      - RABBIT_HOST=rabbit
-      - QUEUE_NAME=tutorial1
-      - TIMING=secondDelay
+    env_file:
+      - .${TUTORIAL}.env
     depends_on:
       rabbit:
         condition: service_healthy
-  hello-consumer:
+  consumer:
     build:
       context: .
       dockerfile: consumer.Dockerfile
     image: permalost/rabbit-tutorials-consumer
-    environment:
-      - RABBIT_HOST=rabbit
-      - QUEUE_NAME=tutorial1
-    depends_on:
-      rabbit:
-        condition: service_healthy
-  work-producer:
-    build:
-      context: .
-      dockerfile: producer.Dockerfile
-    image: permalost/rabbit-tutorials-producer
-    environment:
-      - RABBIT_HOST=rabbit
-      - QUEUE_NAME=tutorial2
-      - TIMING=secondDelay
-      - MESSAGE=periods
-    depends_on:
-      rabbit:
-        condition: service_healthy
-  work-consumer:
-    build:
-      context: .
-      dockerfile: consumer.Dockerfile
-    image: permalost/rabbit-tutorials-consumer
-    environment:
-      - RABBIT_HOST=rabbit
-      - QUEUE_NAME=tutorial2
-      - WORK=periods
+    env_file:
+      - .${TUTORIAL}.env
     depends_on:
       rabbit:
         condition: service_healthy
